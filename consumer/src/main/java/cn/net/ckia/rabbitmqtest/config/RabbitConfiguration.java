@@ -7,37 +7,30 @@ import cn.net.ckia.rabbitmqtest.queue.RoutingRelationship;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.io.InputStream;
-import java.util.Properties;
 
 @Slf4j
 @Configuration
 public class RabbitConfiguration {
 
-    @Bean
-    public ConnectionFactory connectionFactory() throws Exception{
-        Properties properties = new Properties();
-        InputStream resource = this.getClass().getClassLoader().getResourceAsStream("application.properties");
-        properties.load(resource);
-        resource.close();
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(properties.get("spring.rabbitmq.host").toString(),
-                Integer.valueOf(properties.get("spring.rabbitmq.port").toString()));
-        connectionFactory.setUsername(properties.get("spring.rabbitmq.username").toString());
-        connectionFactory.setPassword(properties.get("spring.rabbitmq.password").toString());
-        connectionFactory.setVirtualHost(properties.get("spring.rabbitmq.virtual-host").toString());
-        return connectionFactory;
-    }
+    @Value("${spring.rabbitmq.host}")
+    private String host;
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+    @Value("${spring.rabbitmq.username}")
+    private String username;
+    @Value("${spring.rabbitmq.password}")
+    private String password;
+    @Value("${spring.rabbitmq.virtual-host}")
+    private String virtualHost;
 
     @Bean
-    public RabbitListenerContainerFactory<?> rabbitListenerContainerFactory(@Qualifier("connectionFactory") ConnectionFactory connectionFactory){
+    public RabbitListenerContainerFactory<?> rabbitListenerContainerFactory(ConnectionFactory connectionFactory){
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(new Jackson2JsonMessageConverter());
