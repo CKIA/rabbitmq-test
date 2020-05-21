@@ -1,15 +1,16 @@
 package cn.net.ckia.rabbitmqtest;
 
 import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Arrays;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class ConsumerTestApplication {
 
     public static void main(String[] args) {
